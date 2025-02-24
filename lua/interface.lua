@@ -61,10 +61,9 @@ function M.setup(callback)
             return
         end
         if data then
-            print("got: " .. data)
-            print(os.clock())
             local decoded_data = decode_base64(data)
             local response_object = vim.fn.json_decode(decoded_data)
+            assert(response_object, "serialization error")
             callback(response_object)
         end
     end)

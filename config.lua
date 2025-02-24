@@ -14,5 +14,5 @@ print(os.clock())
 interface.send_cspell_request({
     Kind = "partial",
     startLine = 4,
-    text = "test"
+    text = "test baad spllng"
 });

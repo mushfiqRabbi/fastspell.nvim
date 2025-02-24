@@ -1,5 +1,4 @@
 import { spellCheckDocument } from "cspell-lib";
-import type { ValidationIssue } from "cspell-lib";
 import type { SpellRequest, PartialLintRequest } from "./types/requests.ts";
 import type { SpellResponse, LintResponse } from "./types/responses.ts";
 import { convertLintResult } from "./util/lintResultConverter.ts";
@@ -39,7 +38,7 @@ async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 
 rl.on("line", async (input) => {
     console.log("input: " + input)
-    return;
+    //return;
 	var request: SpellRequest = JSON.parse(atob(input));
 	var response = await processRequest(request);
 	console.log(JSON.stringify(response));
