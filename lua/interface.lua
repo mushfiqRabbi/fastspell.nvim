@@ -1,6 +1,7 @@
 -- local requests = require("types.requests")
 -- local responses = require("types.responses")
 local M = {}
+local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 local function encode_base64(data)
     return ((data:gsub('.', function(x) 
@@ -31,19 +32,18 @@ local function decode_base64(data)
     end))
 end
 
-vim.fn.system('base64', "hello world"):gsub('\n', '')
--- Initialize the process
-function M.setup()
+---Initialize the process
+---@param  callback function(SpellResponse)
+function M.setup(callback)
     local stdin = vim.loop.new_pipe(false)
     local stdout = vim.loop.new_pipe(false)
     local stderr = vim.loop.new_pipe(false)
 
     local handle
-    local pid
-    handle, pid = vim.loop.spawn('npm start', {
+    --handle, _ = vim.loop.spawn('start_server.cmd', {
+    handle, _ = vim.loop.spawn('start_server.cmd', {
         stdio = {stdin, stdout, stderr},
-        cwd = "../jslib/"
-    }, function(code, signal)
+    }, function(code, _)
         print('Process exited with code: ' .. code)
     end)
 
@@ -52,80 +52,32 @@ function M.setup()
         return
     end
 
-    M.handle = handle
     M.stdin = stdin
-    M.stdout = stdout
-    M.stderr = stderr
-    M.pid = pid
 
-    -- Handle stdout data
+
     stdout:read_start(function(err, data)
         if err then
             error("Error reading from stdout: " .. err)
             return
         end
         if data then
-            M.last_response = data
-        end
-    end)
-
-    -- Handle stderr data
-    stderr:read_start(function(err, data)
-        if err then
-            error("Error reading from stderr: " .. err)
-            return
-        end
-        if data then
-            print("Server error: " .. data)
+            print("got: " .. data)
+            print(os.clock())
+            local decoded_data = decode_base64(data)
+            local response_object = vim.fn.json_decode(decoded_data)
+            callback(response_object)
         end
     end)
 end
 
 ---send a request to the cspell server
 ---@param input_object SpellRequest
----@return SpellResponse
 function M.send_cspell_request(input_object)
     -- Convert input object to JSON
     local json_str = vim.fn.json_encode(input_object)
-    if not json_str then
-        error("Failed to encode object to JSON")
-        return {
-            kind = "error",
-            message = "Error with json serialization"
-        }
-    end
-
-    -- Encode to base64
+    assert(json_str, "serialization error")
     local encoded_data = encode_base64(json_str)
-
-    -- Clear last response
-    M.last_response = nil
-
-    -- Send to server
     M.stdin:write(encoded_data .. "\n")
-
-    -- Wait for response (simple polling implementation)
-    local timeout = 5000  -- 5 seconds timeout
-    local start_time = vim.loop.now()
-    while not M.last_response do
-        vim.loop.sleep(10)  -- Sleep for 10ms
-        if (vim.loop.now() - start_time) > timeout then
-            error("Timeout waiting for response")
-            return nil
-        end
-    end
-
-    -- Decode response from base64
-    local decoded_data = decode_base64(M.last_response)
-
-    -- Parse JSON response
-    local response_object = vim.fn.json_decode(decoded_data)
-    if not response_object then
-        error("Failed to decode response JSON")
-        return nil
-    end
-
-    return response_object
 end
 
 -- Cleanup function

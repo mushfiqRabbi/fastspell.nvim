@@ -25,15 +25,6 @@ async function processPartialLintRequest(request: PartialLintRequest) {
 	return convertLintResult(result.issues, request.startLine);
 }
 
-async function checkSpelling(phrase: string): Promise<Array<ValidationIssue>> {
-	const result = await spellCheckDocument(
-		{ uri: "", text: phrase, languageId: "plaintext", locale: "en,it" },
-		{ noConfigSearch: true },
-		{},
-	);
-	return result.issues;
-}
-
 async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
 		case "partial":
@@ -47,6 +38,8 @@ async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 }
 
 rl.on("line", async (input) => {
+    console.log("input: " + input)
+    return;
 	var request: SpellRequest = JSON.parse(atob(input));
 	var response = await processRequest(request);
 	console.log(JSON.stringify(response));
