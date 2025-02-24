@@ -9,7 +9,8 @@ function convertSpellCheckResult(input: Array<ValidationIssue>, lineOfset: numbe
         kind: "lint",
         problems: input.map(x => {
             return {
-                lineStart: x.line.offset + lineOfset,
+                //@ts-ignore
+                lineStart: x.line.position.line + lineOfset,
                 lineOfset: x.offset - x.line.offset,
                 word: x.text
             }
