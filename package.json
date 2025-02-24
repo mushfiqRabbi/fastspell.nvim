@@ -1,0 +1,11 @@
+{
+  "name": "cspell-test",
+  "main": "main.ts",
+  "scripts": {
+    "start": "node --experimental-transform-types src/main.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "cspell-lib": "^8.17.5"
+  }
+}
