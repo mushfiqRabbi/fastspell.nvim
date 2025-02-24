@@ -61,10 +61,12 @@ function M.setup(callback)
             return
         end
         if data then
-            local decoded_data = decode_base64(data)
-            local response_object = vim.fn.json_decode(decoded_data)
-            assert(response_object, "serialization error")
-            callback(response_object)
+            vim.schedule(function()
+                local decoded_data = decode_base64(data)
+                local response_object = vim.fn.json_decode(decoded_data)
+                assert(response_object, "serialization error")
+                callback(response_object)
+            end)
         end
     end)
 end
@@ -76,6 +78,7 @@ function M.send_cspell_request(input_object)
     local json_str = vim.fn.json_encode(input_object)
     assert(json_str, "serialization error")
     local encoded_data = encode_base64(json_str)
+    --print(encoded_data)
     M.stdin:write(encoded_data .. "\n")
 end
 

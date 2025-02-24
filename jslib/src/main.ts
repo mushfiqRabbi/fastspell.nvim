@@ -20,7 +20,6 @@ async function processPartialLintRequest(request: PartialLintRequest) {
 		{ noConfigSearch: true },
 		{},
 	);
-    console.log("test");
 	return convertLintResult(result.issues, request.startLine);
 }
 
@@ -36,12 +35,10 @@ async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	}
 }
 
-rl.on("line", async (input) => {
-    console.log("input: " + input)
-    //return;
+rl.on("line", async (input: string) => {
 	var request: SpellRequest = JSON.parse(atob(input));
 	var response = await processRequest(request);
-	console.log(JSON.stringify(response));
+	console.log(btoa(JSON.stringify(response)));
 });
 
 await new Promise(() => {});

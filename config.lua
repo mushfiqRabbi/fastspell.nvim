@@ -1,6 +1,12 @@
 local interface = require "lua/interface"
 
-interface.setup()
+---@param input SpellResponse
+local function cspell_result_callback(input)
+    print(vim.inspect(input))
+end
+
+
+interface.setup(cspell_result_callback)
 
 interface.send_cspell_request({
     Kind = "partial",
@@ -9,10 +15,3 @@ interface.send_cspell_request({
 });
 
 
-
-print(os.clock())
-interface.send_cspell_request({
-    Kind = "partial",
-    startLine = 4,
-    text = "test baad spllng"
-});
