@@ -1,27 +1,13 @@
-import { spellCheckDocument } from "cspell-lib";
-import type { SpellRequest, CheckSpellRequest } from "./types/requests.ts";
-import type { SpellResponse, SpellCheckResponse } from "./types/responses.ts";
-import { convertLintResult } from "./util/lintResultConverter.ts";
+import type { SpellRequest } from "./types/requests.ts";
+import type { SpellResponse } from "./types/responses.ts";
 import readline from "node:readline";
+import processCheckSpellRequest from "./requests/spell_check_request.ts";
 
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
 });
 
-async function processCheckSpellRequest(request: CheckSpellRequest) {
-	const result = await spellCheckDocument(
-		{
-			uri: "",
-			text: request.text,
-			languageId: request.languageId,
-			locale: "en",
-		},
-		{ noConfigSearch: true },
-		{},
-	);
-	return convertLintResult(result.issues, request.startLine);
-}
 
 async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
