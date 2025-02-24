@@ -32,11 +32,9 @@ function M.setup(callback)
         end
         if data then
             vim.schedule(function()
-                vim.notify("got data: " .. data)
                 local decoded_data = decode_base64(data)
                 local response_object = vim.fn.json_decode(decoded_data)
                 assert(response_object, "serialization error")
-                vim.notify(vim.inspect(response_object))
                 callback(response_object)
             end)
         end
