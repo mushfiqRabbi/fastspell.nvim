@@ -1,1 +1,3 @@
-print("hello world")
+local lua = require "interface"
+
+

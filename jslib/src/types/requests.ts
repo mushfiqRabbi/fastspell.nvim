@@ -7,6 +7,4 @@ type PartialLintRequest = {
 
 type SpellRequest = PartialLintRequest;
 
-
-
 export type {PartialLintRequest, SpellRequest}
