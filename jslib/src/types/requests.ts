@@ -1,5 +1,5 @@
 type CheckSpellRequest = {
-    Kind: "partial"
+    Kind: "check_spell"
     text: string,
     languageId?: string,
     startLine: number

@@ -11,7 +11,7 @@ const rl = readline.createInterface({
 
 async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
-		case "partial":
+		case "check_spell":
 			return await processCheckSpellRequest(request);
 		default:
 			return {

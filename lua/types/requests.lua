@@ -1,5 +1,5 @@
 ---@class CheckSpellRequest
----@field Kind "partial"
+---@field Kind "check_spell"
 ---@field text string
 ---@field languageId string?
 ---@field startLine number

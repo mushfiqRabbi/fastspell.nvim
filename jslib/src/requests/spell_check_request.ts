@@ -1,7 +1,7 @@
 import { spellCheckDocument } from "cspell-lib";
 import type { ValidationIssue } from "cspell-lib";
 import type { SpellCheckResponse } from "../types/responses";
-import { CheckSpellRequest } from "../types/requests";
+import type { CheckSpellRequest } from "../types/requests";
 
 
 function convertSpellCheckResult(input: Array<ValidationIssue>, lineOfset: number): SpellCheckResponse{
