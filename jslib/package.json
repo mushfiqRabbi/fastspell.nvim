@@ -7,5 +7,8 @@
   "type": "module",
   "dependencies": {
     "cspell-lib": "^8.17.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5"
   }
 }
