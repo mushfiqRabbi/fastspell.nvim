@@ -3,7 +3,7 @@
 ---@field lineOfset number
 ---@field word string
 
----@class LintResponse
+---@class SpellCheckResponse
 ---@field kind "lint" # Literal string type
 ---@field problems SpellingProblem[] # Array of SpellingProblem
 
@@ -11,4 +11,4 @@
 ---@field kind "error" # Literal string type
 ---@field message string
 
----@alias SpellResponse LintResponse|LintError
+---@alias SpellResponse SpellCheckResponse|LintError

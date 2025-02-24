@@ -1,7 +1,7 @@
----@class PartialLintRequest
----@field Kind "partial" # Literal string type
+---@class CheckSpellRequest
+---@field Kind "partial"
 ---@field text string
----@field languageId? string # Optional field
+---@field languageId string?
 ---@field startLine number
 
----@alias SpellRequest PartialLintRequest
+---@alias SpellRequest CheckSpellRequest

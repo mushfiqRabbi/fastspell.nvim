@@ -21,6 +21,7 @@ local function cspell_result_callback(input)
         })
     end
 
+    vim.diagnostics.reset(namespace, vim.api.nvim_get_current_buf())
     vim.diagnostic.set(
         namespace,
         vim.api.nvim_get_current_buf(),

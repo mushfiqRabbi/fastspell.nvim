@@ -1,10 +1,10 @@
-type PartialLintRequest = {
+type CheckSpellRequest = {
     Kind: "partial"
     text: string,
     languageId?: string,
     startLine: number
 }
 
-type SpellRequest = PartialLintRequest;
+type SpellRequest = CheckSpellRequest;
 
-export type {PartialLintRequest, SpellRequest}
+export type {CheckSpellRequest, SpellRequest}

@@ -6,7 +6,7 @@ interface SpellingProblem{
     
 }
 
-interface LintResponse{
+interface SpellCheckResponse{
     kind: "lint"
     problems: Array<SpellingProblem>
 }
@@ -16,7 +16,7 @@ interface LintError{
     message: string
 }
 
-type SpellResponse = LintResponse | LintError;
+type SpellResponse = SpellCheckResponse | LintError;
 
 
-export {SpellResponse, LintResponse}
+export {SpellResponse, SpellCheckResponse}

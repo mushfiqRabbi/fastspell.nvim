@@ -1,6 +1,6 @@
 import { spellCheckDocument } from "cspell-lib";
-import type { SpellRequest, PartialLintRequest } from "./types/requests.ts";
-import type { SpellResponse, LintResponse } from "./types/responses.ts";
+import type { SpellRequest, CheckSpellRequest } from "./types/requests.ts";
+import type { SpellResponse, SpellCheckResponse } from "./types/responses.ts";
 import { convertLintResult } from "./util/lintResultConverter.ts";
 import readline from "node:readline";
 
@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 	output: process.stdout,
 });
 
-async function processPartialLintRequest(request: PartialLintRequest) {
+async function processCheckSpellRequest(request: CheckSpellRequest) {
 	const result = await spellCheckDocument(
 		{
 			uri: "",
@@ -26,7 +26,7 @@ async function processPartialLintRequest(request: PartialLintRequest) {
 async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
 		case "partial":
-			return await processPartialLintRequest(request);
+			return await processCheckSpellRequest(request);
 		default:
 			return {
 				kind: "error",
