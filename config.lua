@@ -1,20 +1,23 @@
-local interface = require "lua.util.interface"
-local x = require "lua.requests.spell_check_request"
+local interface = require("lua.util.interface")
+local x = require("lua.requests.spell_check_request")
 
 local namespace = vim.api.nvim_create_namespace("cspell")
+
+vim.diagnostic.config({
+    update_in_insert = true
+},namespace)
 
 local sendSpellCheckRequest = x.createSendSpellCheckRequest(interface)
 local processSpellCheckRequest = x.createProcessSpellCheckRequest(namespace, interface)
 
-
 interface.setup(processSpellCheckRequest)
 
--- escape from terminal mode
-vim.api.nvim_set_keymap("n", "ss", "", {
-	noremap = true,
-	silent = true,
-	callback = function()
-        sendSpellCheckRequest(0,2)
+vim.api.nvim_create_autocmd("TextChanged", {
+	callback = function(ev)
+        vim.schedule(
+            function ()
+                sendSpellCheckRequest(0,2)
+            end
+        )
 	end,
 })
-
