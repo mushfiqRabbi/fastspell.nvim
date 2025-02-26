@@ -12,8 +12,7 @@ local processSpellCheckRequest = x.createProcessSpellCheckRequest(namespace, int
 
 interface.setup(processSpellCheckRequest)
 
-vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI"}, {
--- vim.api.nvim_create_autocmd("InsertLeave", {
+vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI", "BufEnter", "WinScrolled"}, {
 	callback = function(ev)
         vim.schedule(
             function ()
