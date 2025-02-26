@@ -12,11 +12,14 @@ local processSpellCheckRequest = x.createProcessSpellCheckRequest(namespace, int
 
 interface.setup(processSpellCheckRequest)
 
-vim.api.nvim_create_autocmd("TextChanged", {
+vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI"}, {
+-- vim.api.nvim_create_autocmd("InsertLeave", {
 	callback = function(ev)
         vim.schedule(
             function ()
-                sendSpellCheckRequest(0,2)
+                local first_line = vim.fn.line('w0')
+                local last_line = vim.fn.line('w$')
+                sendSpellCheckRequest(first_line, last_line)
             end
         )
 	end,
