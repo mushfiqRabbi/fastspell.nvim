@@ -30,68 +30,71 @@ end
 
 
 function M.processSpellCheckRequest(input)
-	assert(input.kind == "lint")
+    vim.schedule(function ()
+        assert(input.kind == "lint")
 
-	---@type vim.Diagnostic[]
-	local diagnostics = {}
+        ---@type vim.Diagnostic[]
+        local diagnostics = {}
 
-	for _, value in ipairs(input.problems) do
-		table.insert(diagnostics, {
-			lnum = value.lineStart,
-			col = value.lineOfset,
-			end_col = value.lineOfset + #value.word,
-			serverity = vim.diagnostic.severity.HINT,
-			message = "Misspelled word: " .. value.word,
-		})
-	end
+        for _, value in ipairs(input.problems) do
+            table.insert(diagnostics, {
+                lnum = value.lineStart,
+                col = value.lineOfset,
+                end_col = value.lineOfset + #value.word,
+                serverity = vim.diagnostic.severity.HINT,
+                message = "Misspelled word: " .. value.word,
+            })
+        end
 
-	vim.diagnostic.reset(M.namespace, vim.api.nvim_get_current_buf())
-	vim.diagnostic.set(M.namespace, vim.api.nvim_get_current_buf(), diagnostics)
+        vim.diagnostic.reset(M.namespace, vim.api.nvim_get_current_buf())
+        vim.diagnostic.set(M.namespace, vim.api.nvim_get_current_buf(), diagnostics)
 
-    request.is_in_execution = false
+        request.is_in_execution = false
 
-    if request.in_queue then
-        request.in_queue = false
-        M.sendSpellCheckRequest(
-            request.next_request_args.line_start,
-            request.next_request_args.line_end,
-            request.next_request_args.buffer
-        )
-    else
+        if request.in_queue then
+            request.in_queue = false
+            M.sendSpellCheckRequest(
+                request.next_request_args.line_start,
+                request.next_request_args.line_end,
+                request.next_request_args.buffer
+            )
+        else
 
-    end
+        end
+    end)
 end
 
 ---@param line_start number
 ---@param line_end number
 ---@param buffer number | nil
 function M.sendSpellCheckRequest(line_start, line_end, buffer)
+    vim.schedule(function ()
+        if not buffer then
+            buffer = vim.api.nvim_get_current_buf()
+        end
 
-    if not buffer then
-        buffer = vim.api.nvim_get_current_buf()
-    end
+        ---@type SpellCheckRequestArgs
+        local args = {
+            line_start = line_start,
+            line_end = line_end,
+            buffer = buffer
+        }
 
-    ---@type SpellCheckRequestArgs
-    local args = {
-        line_start = line_start,
-        line_end = line_end,
-        buffer = buffer
-    }
+        if request.is_in_execution then
+            request.next_request_args = args
+            request.in_queue = true
+            return
+        end
 
-    if request.is_in_execution then
-        request.next_request_args = args
-        request.in_queue = true
-        return
-    end
-
-    request.is_in_execution = true
-	local linesArray = vim.api.nvim_buf_get_lines(args.buffer, args.line_start, args.line_end, true)
-	local lines = table.concat(linesArray, "\n")
-	M.interface.send_request({
-		Kind = "check_spell",
-		text = lines,
-		startLine = args.line_start,
-	})
+        request.is_in_execution = true
+        local linesArray = vim.api.nvim_buf_get_lines(args.buffer, args.line_start, args.line_end, true)
+        local lines = table.concat(linesArray, "\n")
+        M.interface.send_request({
+            Kind = "check_spell",
+            text = lines,
+            startLine = args.line_start,
+        })
+    end)
 end
 
 return M
