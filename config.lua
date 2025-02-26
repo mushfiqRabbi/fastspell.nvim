@@ -17,9 +17,12 @@ vim.api.nvim_create_autocmd({"TextChanged", "TextChangedI", "BufEnter", "WinScro
             function ()
                 local first_line = vim.fn.line('w0')
                 local last_line = vim.fn.line('w$')
+                local end_line = vim.api.nvim_buf_line_count(0)
                 spell_check_request.sendSpellCheckRequest({
-                    line_start = first_line,
-                    line_end = last_line
+                    -- line_start = first_line,
+                    -- line_end = last_line
+                    line_start = 0,
+                    line_end = end_line
                 })
             end
         )

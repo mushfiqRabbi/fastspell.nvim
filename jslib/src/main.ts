@@ -22,9 +22,9 @@ async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 }
 
 rl.on("line", async (input: string) => {
-	var request: SpellRequest = JSON.parse(atob(input));
+	var request: SpellRequest = JSON.parse(input);
 	var response = await processRequest(request);
-	console.log(btoa(JSON.stringify(response)));
+	console.log(JSON.stringify(response));
 });
 
 await new Promise(() => {});

@@ -1,7 +1,5 @@
 ---@class Interface
 local M = {}
-local decode_base64 = require("lua.util.base64").decode_base64
-local encode_base64 = require("lua.util.base64").encode_base64
 
 ---Initialize the process
 ---@param  callback function(SpellResponse)
@@ -32,9 +30,7 @@ function M.setup(callback)
         end
         if data then
             vim.schedule(function()
-                local decoded_data = decode_base64(data)
-                local response_object = vim.fn.json_decode(decoded_data)
-                assert(response_object, "serialization error")
+                local response_object = vim.fn.json_decode(data)
                 callback(response_object)
             end)
         end
@@ -44,10 +40,8 @@ end
 ---@param input_object SpellRequest
 function M.send_request(input_object)
     local json_str = vim.fn.json_encode(input_object)
-    assert(json_str, "serialization error")
-    local encoded_data = encode_base64(json_str)
-    M.stdin:write(encoded_data .. "\n")
+    -- local encoded_data = encode_base64(json_str)
+    M.stdin:write(json_str .. "\n")
 end
-
 
 return M
