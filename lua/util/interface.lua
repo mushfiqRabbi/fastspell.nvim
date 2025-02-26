@@ -1,3 +1,4 @@
+---@class Interface
 local M = {}
 local decode_base64 = require("lua.util.base64").decode_base64
 local encode_base64 = require("lua.util.base64").encode_base64
@@ -24,7 +25,6 @@ function M.setup(callback)
 
     M.stdin = stdin
 
-
     stdout:read_start(function(err, data)
         if err then
             error("Error reading from stdout: " .. err)
@@ -41,27 +41,13 @@ function M.setup(callback)
     end)
 end
 
----send a request to the cspell server
 ---@param input_object SpellRequest
 function M.send_request(input_object)
-    -- Convert input object to JSON
     local json_str = vim.fn.json_encode(input_object)
     assert(json_str, "serialization error")
     local encoded_data = encode_base64(json_str)
     M.stdin:write(encoded_data .. "\n")
 end
 
--- Cleanup function
-function M.cleanup()
-    if M.handle then
-        -- Close pipes
-        if M.stdin then M.stdin:close() end
-        if M.stdout then M.stdout:close() end
-        if M.stderr then M.stderr:close() end
-
-        -- Close process handle
-        M.handle:close()
-    end
-end
 
 return M
