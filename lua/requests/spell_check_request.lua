@@ -1,45 +1,68 @@
 local M = {}
 
-function M.createProcessSpellCheckRequest(namespace, interface)
-    ---@param input SpellCheckResponse
-    return function (input)
-        assert(input.kind == "lint")
+---@class Request
+---@field is_in_execution boolean inclusive, 0 indexed
+---@field in_queue boolean exclusive
 
-        ---@type vim.Diagnostic[]
-        local diagnostics = {}
+---@class SpellCheckRequestArgs
+---@field line_start number
+---@field line_end number
 
-        for _, value in ipairs(input.problems) do
-            table.insert(diagnostics, {
-                lnum = value.lineStart,
-                col = value.lineOfset,
-                end_col = value.lineOfset + #value.word,
-                serverity = vim.diagnostic.severity.HINT,
-                message = "Misspelled word: "..value.word
-            })
-        end
 
-        vim.diagnostic.reset(namespace, vim.api.nvim_get_current_buf())
-        vim.diagnostic.set(
-            namespace,
-            vim.api.nvim_get_current_buf(),
-            diagnostics
-        )
-    end
+---@type table<integer, Request>
+local requests_by_buffer = {}
+
+---@param namespace number
+---@param interface Interface
+function M.setup(namespace, interface)
+	M.interface = interface
+	M.namespace = namespace
+	---@type table<integer, Request>
+	M.requests_by_buffer = {}
 end
 
-function M.createSendSpellCheckRequest(interface)
-    ---@param lineStart number # inclusive, 0 indexed
-    ---@param lineEnd number # exclusive
-    return function (lineStart, lineEnd)
-        local buffer = vim.api.nvim_get_current_buf()
-        local linesArray = vim.api.nvim_buf_get_lines(buffer, lineStart, lineEnd, true)
-        local lines = table.concat(linesArray, "\n")
-        interface.send_request({
-            Kind = "check_spell",
-            text = lines,
-            startLine = lineStart
-        })
-    end
+---@return Request
+function M.getCurrentBufferRequests()
+	local current_buffer = vim.nvim_get_current_buf()
+	if requests_by_buffer[current_buffer] == nil then
+		requests_by_buffer[current_buffer] = {
+			is_in_execution = false,
+			in_queue = false,
+		}
+	end
+	return requests_by_buffer[current_buffer]
+end
+
+function M.processSpellCheckRequest(input)
+	assert(input.kind == "lint")
+
+	---@type vim.Diagnostic[]
+	local diagnostics = {}
+
+	for _, value in ipairs(input.problems) do
+		table.insert(diagnostics, {
+			lnum = value.lineStart,
+			col = value.lineOfset,
+			end_col = value.lineOfset + #value.word,
+			serverity = vim.diagnostic.severity.HINT,
+			message = "Misspelled word: " .. value.word,
+		})
+	end
+
+	vim.diagnostic.reset(M.namespace, vim.api.nvim_get_current_buf())
+	vim.diagnostic.set(M.namespace, vim.api.nvim_get_current_buf(), diagnostics)
+end
+
+---@param args SpellCheckRequestArgs
+function M.sendSpellCheckRequest(args)
+	local buffer = vim.api.nvim_get_current_buf()
+	local linesArray = vim.api.nvim_buf_get_lines(buffer, args.line_start, args.line_end, true)
+	local lines = table.concat(linesArray, "\n")
+	M.interface.send_request({
+		Kind = "check_spell",
+		text = lines,
+		startLine = args.line_start,
+	})
 end
 
 return M
