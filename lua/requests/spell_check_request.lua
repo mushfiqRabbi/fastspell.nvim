@@ -8,10 +8,16 @@ local M = {}
 ---@class SpellCheckRequestArgs
 ---@field line_start number
 ---@field line_end number
+---@field buffer number
 
 
----@type table<integer, Request>
-local requests_by_buffer = {}
+---@type Request
+
+local request = {
+    is_in_execution = false,
+    in_queue = false,
+    next_request_args = nil
+}
 
 ---@param namespace number
 ---@param interface Interface
@@ -22,17 +28,6 @@ function M.setup(namespace, interface)
 	M.requests_by_buffer = {}
 end
 
----@return Request
-function M.getCurrentBufferRequest()
-	local current_buffer = vim.api.nvim_get_current_buf()
-	if requests_by_buffer[current_buffer] == nil then
-		requests_by_buffer[current_buffer] = {
-			is_in_execution = false,
-			in_queue = false,
-		}
-	end
-	return requests_by_buffer[current_buffer]
-end
 
 function M.processSpellCheckRequest(input)
 	assert(input.kind == "lint")
@@ -53,21 +48,36 @@ function M.processSpellCheckRequest(input)
 	vim.diagnostic.reset(M.namespace, vim.api.nvim_get_current_buf())
 	vim.diagnostic.set(M.namespace, vim.api.nvim_get_current_buf(), diagnostics)
 
-    local request = M.getCurrentBufferRequest()
     request.is_in_execution = false
 
     if request.in_queue then
         request.in_queue = false
-        M.sendSpellCheckRequest(request.next_request_args)
+        M.sendSpellCheckRequest(
+            request.next_request_args.line_start,
+            request.next_request_args.line_end,
+            request.next_request_args.buffer
+        )
     else
 
     end
 end
 
----@param args SpellCheckRequestArgs
-function M.sendSpellCheckRequest(args)
+---@param line_start number
+---@param line_end number
+---@param buffer number | nil
+function M.sendSpellCheckRequest(line_start, line_end, buffer)
 
-    local request = M.getCurrentBufferRequest()
+    if not buffer then
+        buffer = vim.api.nvim_get_current_buf()
+    end
+
+    ---@type SpellCheckRequestArgs
+    local args = {
+        line_start = line_start,
+        line_end = line_end,
+        buffer = buffer
+    }
+
     if request.is_in_execution then
         request.next_request_args = args
         request.in_queue = true
@@ -75,8 +85,7 @@ function M.sendSpellCheckRequest(args)
     end
 
     request.is_in_execution = true
-	local buffer = vim.api.nvim_get_current_buf()
-	local linesArray = vim.api.nvim_buf_get_lines(buffer, args.line_start, args.line_end, true)
+	local linesArray = vim.api.nvim_buf_get_lines(args.buffer, args.line_start, args.line_end, true)
 	local lines = table.concat(linesArray, "\n")
 	M.interface.send_request({
 		Kind = "check_spell",
