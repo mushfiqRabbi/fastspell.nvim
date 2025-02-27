@@ -10,10 +10,7 @@ local default_settings = {
     server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. "../start_server.cmd"
 }
 
-vim.notify(default_settings.server_code_path)
-
 function M.setup(user_settings)
-    vim.notify(default_settings.server_code_path)
 
     ---@type FastSpellSettings
     local settings = vim.tbl_deep_extend("force", default_settings, user_settings or {})
