@@ -1,12 +1,16 @@
-local interface = require("lua.util.interface")
-local spell_check_request = require("lua.requests.spell_check_request")
+local interface = require("util.interface")
+local spell_check_request = require("requests.spell_check_request")
+
 
 local M = {}
 
 ---@class FastSpellSetup
 local default_settings = {
-    namespace = "fastspell"
+    namespace = "fastspell",
+    server_code_path = debug.getinfo(1).source
 }
+
+vim.notify(default_settings.server_code_path)
 
 function M.setup(user_settings)
     ---@type FastSpellSetup
