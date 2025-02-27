@@ -3,14 +3,15 @@ local M = {}
 
 ---Initialize the process
 ---@param  callback function(SpellResponse)
-function M.setup(callback)
+---@param settings FastSpellSettings
+function M.setup(callback, settings)
     local stdin = vim.loop.new_pipe(false)
     local stdout = vim.loop.new_pipe(false)
     local stderr = vim.loop.new_pipe(false)
 
     local handle
     --handle, _ = vim.loop.spawn('start_server.cmd', {
-    handle, _ = vim.loop.spawn('start_server.cmd', {
+    handle, _ = vim.loop.spawn(settings.server_code_path, {
         stdio = {stdin, stdout, stderr},
     }, function(code, _)
         print('Process exited with code: ' .. code)
@@ -22,6 +23,7 @@ function M.setup(callback)
     end
 
     M.stdin = stdin
+    M.settings = settings
 
     stdout:read_start(function(err, data)
         if err then

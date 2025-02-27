@@ -21,11 +21,11 @@ local request = {
 
 ---@param namespace number
 ---@param interface Interface
-function M.setup(namespace, interface)
+---@param settings 
+function M.setup(namespace, interface, settings)
 	M.interface = interface
 	M.namespace = namespace
-	---@type table<integer, Request>
-	M.requests_by_buffer = {}
+    M.settings = settings
 end
 
 

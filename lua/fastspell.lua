@@ -4,16 +4,18 @@ local spell_check_request = require("requests.spell_check_request")
 
 local M = {}
 
----@class FastSpellSetup
+---@class FastSpellSettings
 local default_settings = {
     namespace = "fastspell",
-    server_code_path = debug.getinfo(1).source
+    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. "../start_server.cmd"
 }
 
 vim.notify(default_settings.server_code_path)
 
 function M.setup(user_settings)
-    ---@type FastSpellSetup
+    vim.notify(default_settings.server_code_path)
+
+    ---@type FastSpellSettings
     local settings = vim.tbl_deep_extend("force", default_settings, user_settings or {})
 
     local namespace = vim.api.nvim_create_namespace(settings.namespace)
@@ -23,8 +25,8 @@ function M.setup(user_settings)
     },namespace)
 
 
-    spell_check_request.setup(namespace, interface)
-    interface.setup(spell_check_request.processSpellCheckRequest)
+    spell_check_request.setup(namespace, interface, settings)
+    interface.setup(spell_check_request.processSpellCheckRequest,settings)
 
     M.sendSpellCheckRequest = spell_check_request.sendSpellCheckRequest
 
