@@ -2,7 +2,7 @@ import type { SpellRequest } from "./types/requests.ts";
 import type { SpellResponse } from "./types/responses.ts";
 import {createInterface} from "node:readline";
 
-import processCheckSpellRequest from "./requests/spell_check_request";
+import processCheckSpellRequest from "./requests/spell_check_request.ts";
 
 const rl = createInterface({
 	input: process.stdin,
