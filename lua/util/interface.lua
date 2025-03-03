@@ -10,15 +10,17 @@ function M.setup(callback, settings)
     local stderr = vim.loop.new_pipe(false)
 
     local handle
-    --handle, _ = vim.loop.spawn('start_server.cmd', {
-    handle, _ = vim.loop.spawn(settings.server_code_path, {
+    handle, _ = vim.loop.spawn('start_server.cmd', {
+    -- handle, _ = vim.loop.spawn(settings.server_code_path, {
         stdio = {stdin, stdout, stderr},
     }, function(code, _)
-        print('Process exited with code: ' .. code)
+        vim.schedule(function ()
+            vim.notify('Fastspell: Process exited with code: ' .. code)
+        end)
     end)
 
     if not handle then
-        error("Failed to spawn process")
+        vim.notify("Fastspell: Failed to spawn process")
         return
     end
 
@@ -27,7 +29,7 @@ function M.setup(callback, settings)
 
     stdout:read_start(function(err, data)
         if err then
-            error("Error reading from stdout: " .. err)
+            vim.notify("Fastspell: Error reading from stdout: " .. err)
             return
         end
         if data then
