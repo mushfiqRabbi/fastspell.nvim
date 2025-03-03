@@ -29,6 +29,7 @@ function M.setup(namespace, interface, settings)
 end
 
 
+---@param input SpellResponse
 function M.processSpellCheckRequest(input)
     vim.schedule(function ()
         assert(input.kind == "lint")
