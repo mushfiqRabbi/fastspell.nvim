@@ -2,7 +2,8 @@
   "name": "cspell-test",
   "main": "main.ts",
   "scripts": {
-    "start": "node --experimental-transform-types src/main.ts",
+    "start": "node dist/src/main.js",
+    "start2": "node --experimental-transform-types src/main.ts",
     "build": "tsc"
   },
   "type": "module",
