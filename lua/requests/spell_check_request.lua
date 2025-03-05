@@ -79,7 +79,8 @@ function M.sendSpellCheckRequest(line_start, line_end, buffer)
     end
 
     line_start = math.max(0, line_start)
-    line_end = math.min(vim.api.nvim_buf_line_count(buffer), line_start)
+    line_end = math.min(vim.api.nvim_buf_line_count(buffer), line_end)
+
 
     vim.schedule(function ()
         if not buffer then
