@@ -1,3 +1,8 @@
+-- this is just an example file useful during development to run the config
+-- to run:
+--      nvim -u config.lua
+--      nvim -u config.lua --headless
+
 local fastspell = require("fastspell")
 
 fastspell.setup()
