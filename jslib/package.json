@@ -3,6 +3,8 @@
   "main": "main.ts",
   "scripts": {
     "start": "node dist/src/main.js",
+    "dev": "node dist/src/main.js",
+    "predev": "npm run build", 
     "build": "tsc"
   },
   "type": "module",
