@@ -70,9 +70,16 @@ end
 ---@param buffer number | nil
 function M.sendSpellCheckRequest(line_start, line_end, buffer)
 
+    if buffer == nil then
+        buffer = vim.api.nvim_get_current_buf()
+    end
+
     if M.settings.filter_by_buf_type and vim.api.nvim_get_option_value("buftype", {}) ~= "" then
         return
     end
+
+    line_start = math.max(0, line_start)
+    line_end = math.min(vim.api.nvim_buf_line_count(buffer), line_start)
 
     vim.schedule(function ()
         if not buffer then
