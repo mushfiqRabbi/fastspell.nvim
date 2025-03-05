@@ -10,8 +10,7 @@ function M.setup(callback, settings)
     local stderr = vim.loop.new_pipe(false)
 
     local handle
-    handle, _ = vim.loop.spawn('start_server.cmd', {
-    -- handle, _ = vim.loop.spawn(settings.server_code_path, {
+    handle, _ = vim.loop.spawn(settings.server_code_path, {
         stdio = {stdin, stdout, stderr},
     }, function(code, _)
         vim.schedule(function ()
@@ -27,24 +26,36 @@ function M.setup(callback, settings)
     M.stdin = stdin
     M.settings = settings
 
-    stdout:read_start(function(err, data)
-        if err then
-            vim.notify("Fastspell: Error reading from stdout: " .. err)
-            return
-        end
-        if data then
-            vim.schedule(function()
+    stderr:read_start(function(err, data)
+        vim.schedule(function()
+            if err then
+                vim.notify("Fastspell: Error reading from stderr: " .. err)
+                return
+            end
+            if data then
+                vim.notify("Fastspell: js server printed error: " .. data)
                 local response_object = vim.fn.json_decode(data)
                 callback(response_object)
-            end)
-        end
+            end
+        end)
+    end)
+    stdout:read_start(function(err, data)
+        vim.schedule(function()
+            if err then
+                vim.notify("Fastspell: Error reading from stdout: " .. err)
+                return
+            end
+            if data then
+                local response_object = vim.fn.json_decode(data)
+                callback(response_object)
+            end
+        end)
     end)
 end
 
 ---@param input_object SpellRequest
 function M.send_request(input_object)
     local json_str = vim.fn.json_encode(input_object)
-    -- local encoded_data = encode_base64(json_str)
     M.stdin:write(json_str .. "\n")
 end
 

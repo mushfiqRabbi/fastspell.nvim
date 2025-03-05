@@ -7,13 +7,15 @@ local M = {}
 ---@class FastSpellSettings
 local default_settings = {
     namespace = "fastspell",
-    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. "./start_server.cmd"
+    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. ".\\scripts\\start_server.cmd"
+    -- server_code_path = "cat"
 }
 
 function M.setup(user_settings)
 
     ---@type FastSpellSettings
     local settings = vim.tbl_deep_extend("force", default_settings, user_settings or {})
+    vim.notify(settings.server_code_path)
 
     local namespace = vim.api.nvim_create_namespace(settings.namespace)
 
