@@ -3,7 +3,6 @@
   "main": "main.ts",
   "scripts": {
     "start": "node dist/src/main.js",
-    "start2": "node --experimental-transform-types src/main.ts",
     "build": "tsc"
   },
   "type": "module",
