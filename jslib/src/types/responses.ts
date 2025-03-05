@@ -23,4 +23,4 @@ interface ErrorResponse{
 
 type SpellResponse = SpellCheckResponse | ErrorResponse | SuggestionResponse;
 
-export {SpellResponse, SpellCheckResponse}
+export {SpellResponse, SpellCheckResponse, SuggestionResponse}

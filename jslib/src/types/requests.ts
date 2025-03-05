@@ -12,4 +12,4 @@ type SuggestionRequest = {
 
 type SpellRequest = CheckSpellRequest | SuggestionRequest;
 
-export type {CheckSpellRequest, SpellRequest}
+export type {CheckSpellRequest, SpellRequest, SuggestionRequest}

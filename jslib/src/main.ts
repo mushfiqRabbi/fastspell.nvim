@@ -3,6 +3,7 @@ import type { SpellResponse } from "./types/responses.ts";
 import {createInterface} from "node:readline";
 
 import processCheckSpellRequest from "./requests/spell_check_request.js";
+import processSuggestionRequest from "./requests/suggestion_request.js";
 
 const rl = createInterface({
 	input: process.stdin,
@@ -14,10 +15,12 @@ async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
 		case "check_spell":
 			return await processCheckSpellRequest(request);
+        case "suggestion":
+            return await processSuggestionRequest(request);
 		default:
 			return {
 				kind: "error",
-				message: `Unknown request kind: ${request.Kind}`,
+				message: `Unknown request: ${request}`,
 			};
 	}
 }
