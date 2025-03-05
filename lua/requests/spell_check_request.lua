@@ -21,7 +21,7 @@ local request = {
 
 ---@param namespace number
 ---@param interface Interface
----@param settings 
+---@param settings FastSpellSettings
 function M.setup(namespace, interface, settings)
 	M.interface = interface
 	M.namespace = namespace
@@ -69,6 +69,11 @@ end
 ---@param line_end number
 ---@param buffer number | nil
 function M.sendSpellCheckRequest(line_start, line_end, buffer)
+
+    if M.settings.filter_by_buf_type and vim.api.nvim_get_option_value("buftype", {}) ~= "" then
+        return
+    end
+
     vim.schedule(function ()
         if not buffer then
             buffer = vim.api.nvim_get_current_buf()

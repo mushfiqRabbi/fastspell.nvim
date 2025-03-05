@@ -7,7 +7,8 @@ local M = {}
 ---@class FastSpellSettings
 local default_settings = {
     namespace = "fastspell",
-    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. ".\\scripts\\start_server.cmd"
+    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. ".\\scripts\\start_server.cmd",
+    filter_by_buf_type = true
 }
 
 function M.setup(user_settings)
