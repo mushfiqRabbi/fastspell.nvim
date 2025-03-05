@@ -11,12 +11,16 @@ interface SpellCheckResponse{
     problems: Array<SpellingProblem>
 }
 
-interface LintError{
+interface SuggestionResponse {
+    kind: "suggestion",
+    suggestion: Array<string>
+}
+
+interface ErrorResponse{
     kind: "error",
     message: string
 }
 
-type SpellResponse = SpellCheckResponse | LintError;
-
+type SpellResponse = SpellCheckResponse | ErrorResponse | SuggestionResponse;
 
 export {SpellResponse, SpellCheckResponse}

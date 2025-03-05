@@ -5,6 +5,11 @@ type CheckSpellRequest = {
     startLine: number
 }
 
-type SpellRequest = CheckSpellRequest;
+type SuggestionRequest = {
+    Kind: "suggestion",
+    text: string
+}
+
+type SpellRequest = CheckSpellRequest | SuggestionRequest;
 
 export type {CheckSpellRequest, SpellRequest}
