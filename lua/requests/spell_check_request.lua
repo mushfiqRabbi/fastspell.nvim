@@ -42,7 +42,7 @@ function M.processSpellCheckRequest(input)
                 lnum = value.lineStart,
                 col = value.lineOfset,
                 end_col = value.lineOfset + #value.word,
-                serverity = vim.diagnostic.severity.HINT,
+                severity = M.settings.diagnostic_severity,
                 message = "Misspelled word: " .. value.word,
             })
         end
