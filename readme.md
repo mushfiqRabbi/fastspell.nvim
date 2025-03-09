@@ -11,15 +11,26 @@ Yes, neovim has his own integrated spell checker that can be enabled, however af
 10 seconds you will realized that is not really optimal for code. It is in fact NOT able to correctly
 run a spell checker on CamelCase or snake_case text
 
-
 ![alt text](./img/example1.png "example")
-// using the integrated spell checker:
-GoodSpellingInCamelCase
-BaadSpllngInCamelCase
 
-// using fastspell.nvim
-GoodSpellingInCamelCase
-BaadSpllngInCamelCase
+### Cspell + nvim-lint
+The obvious solution to the camel case problem is to use something like [cspell](https://github.com/streetsidesoftware/cspell)
+which is designed from the ground up with code in mind. Moreover there are already some cspell integration for neovim,
+such as [nvim-lint](https://github.com/mfussenegger/nvim-lint) however, when I tried those I encountered another problem...
+They are too slow!
+Here I would like to point out that this is not nvim-lint or cspell's fault. It is simply the case that some optimizations
+are impossible within the nvim-lint structure (due to the fact that nvim-lint is designed to support virtually infinite
+different kinds of linters).
+
+However by removing the "multiple linters" requirements, and designing a linter client specific for cspell I was able
+to make significant optimizations that resulted in this plugin being 100x faster.
+
+Just for the record I would also like to say that my "significant optimizations" aren't something fancy at all.
+All I needed to do to achieve this 100x performance uplift is to keep the node instance constantly in memory
+and avoid creating a new one every time a spell checking request is made.
+
+Note that this will have a sizable impact on your memory usage (It's javascript after all...) But it is not something
+extreme (about 100MB on my machine)
 
 # Installation
 
