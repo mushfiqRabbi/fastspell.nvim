@@ -7,7 +7,11 @@ and therefore requires node to be install in your system (and in your path)
 
 On install you should run the [install.sh](./lua/scripts/install.sh) or [install.cmd](./lua/scripts/install.cmd)
 scripts (depending on your OS). This will install all the node dependency and build the project.
+If you use the configuration shown below, this should run automatically for you.
 
+Note that the first time you install the plugin it is likely that you'll see some error the first time you launch nvim.
+This is because the build script hasn't finished by the time the first request to the server is made.
+If this appends to you, just reboot nvim the first time, and then you'll be fine.
 
 ## Using lazy.nvim
 
@@ -15,7 +19,13 @@ scripts (depending on your OS). This will install all the node dependency and bu
 return {
 	"lucaSartore/fastspell.nvim",
     -- automatically run the installation script on windows and linux)
-    run = "./lua/scripts/install." .. (vim.fn.has("win32") and "cmd" or "sh")
+    -- if this doesn't work for some reason, you can 
+    build = function ()
+        local base_path = vim.fn.stdpath("data") .. "/lazy/fastspell.nvim"
+        local cmd = base_path .. "/lua/scripts/install." .. (vim.fn.has("win32") and "cmd" or "sh")
+        vim.system({cmd})
+    end,
+
 	config = function()
 		local fastspell = require("fastspell")
 
