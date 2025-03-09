@@ -7,9 +7,11 @@ local M = {}
 ---@class FastSpellSettings
 local default_settings = {
     namespace = "fastspell",
-    server_code_path = debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") .. ".\\scripts\\start_server.cmd",
+    server_code_path =
+        debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") ..
+        (vim.fn.has("win32") and ".\\scripts\\start_server.cmd" or "./scripts/start_server.sh"),
     filter_by_buf_type = true,
-    diagnostic_severity = vim.diagnostic.severity.HINT
+    diagnostic_severity = vim.diagnostic.severity.INFO
 }
 
 function M.setup(user_settings)
