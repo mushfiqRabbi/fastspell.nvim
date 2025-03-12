@@ -18,6 +18,8 @@ The obvious solution to the camel case problem is to use something like [cspell]
 which is designed from the ground up with code in mind. Moreover there are already some cspell integration for neovim,
 such as [nvim-lint](https://github.com/mfussenegger/nvim-lint) however, when I tried those I encountered another problem...
 They are too slow, and they can't provide "as you type" feedback.
+
+#### fastspell vs nvim-lint speed comparison (video)
 [![fastspell vs nvim-lint speed comparison (video)](https://img.youtube.com/vi/nYdt2MwCHm8/0.jpg)](https://www.youtube.com/watch?v=nYdt2MwCHm8)
 
 Here I would like to point out that this is not nvim-lint or cspell's fault. It is simply the case that some optimizations
