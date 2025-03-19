@@ -11,7 +11,8 @@ local default_settings = {
         debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") ..
         (vim.fn.has("win32") and ".\\scripts\\start_server.cmd" or "./scripts/start_server.sh"),
     filter_by_buf_type = true,
-    diagnostic_severity = vim.diagnostic.severity.INFO
+    diagnostic_severity = vim.diagnostic.severity.INFO,
+    cspell_json_file_path = nil
 }
 
 function M.setup(user_settings)
@@ -28,6 +29,13 @@ function M.setup(user_settings)
 
     spell_check_request.setup(namespace, interface, settings)
     interface.setup(spell_check_request.processSpellCheckRequest,settings)
+
+    if settings.cspell_json_file_path ~= nil then
+        interface.send_request{
+            Kind="configure_spell_check_request",
+            configFilePath=settings.cspell_json_file_path
+        }
+    end
 
     M.sendSpellCheckRequest = spell_check_request.sendSpellCheckRequest
 

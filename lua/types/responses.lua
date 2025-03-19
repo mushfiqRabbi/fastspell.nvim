@@ -11,4 +11,7 @@
 ---@field kind "error" # Literal string type
 ---@field message string
 
----@alias SpellResponse SpellCheckResponse|LintError
+---@class ConfigureSpellCheckResponse
+---@field kind "configure_spell_check_response"
+
+---@alias SpellResponse SpellCheckResponse|LintError|ConfigureSpellCheckResponse

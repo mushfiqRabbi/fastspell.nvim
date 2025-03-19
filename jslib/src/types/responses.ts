@@ -1,4 +1,3 @@
-
 interface SpellingProblem{
     lineStart: number,
     lineOfset: number,
@@ -16,11 +15,15 @@ interface SuggestionResponse {
     suggestion: Array<string>
 }
 
-interface ErrorResponse{
+interface ErrorResponse {
     kind: "error",
     message: string
 }
 
-type SpellResponse = SpellCheckResponse | ErrorResponse | SuggestionResponse;
+interface ConfigureSpellCheckResponse {
+    kind: "configure_spell_check_response"
+}
 
-export {SpellResponse, SpellCheckResponse, SuggestionResponse}
+type SpellResponse = SpellCheckResponse | ErrorResponse | SuggestionResponse | ConfigureSpellCheckResponse;
+
+export {SpellResponse, SpellCheckResponse, SuggestionResponse, ConfigureSpellCheckResponse}

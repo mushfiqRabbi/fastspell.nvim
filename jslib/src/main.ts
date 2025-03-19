@@ -2,7 +2,7 @@ import type { SpellRequest } from "./types/requests.ts";
 import type { SpellResponse } from "./types/responses.ts";
 import {createInterface} from "node:readline";
 
-import processCheckSpellRequest from "./requests/spell_check_request.js";
+import {configureSpellCheckRequest, processCheckSpellRequest} from "./requests/spell_check_request.js";
 import processSuggestionRequest from "./requests/suggestion_request.js";
 
 const rl = createInterface({
@@ -11,12 +11,15 @@ const rl = createInterface({
 });
 
 
+
 async function processRequest(request: SpellRequest): Promise<SpellResponse> {
 	switch (request.Kind) {
 		case "check_spell":
 			return await processCheckSpellRequest(request);
         case "suggestion":
             return await processSuggestionRequest(request);
+        case "configure_spell_check_request":
+            return await configureSpellCheckRequest(request)
 		default:
 			return {
 				kind: "error",

@@ -46,8 +46,13 @@ function M.setup(callback, settings)
                 return
             end
             if data then
+                ---@type SpellResponse
                 local response_object = vim.fn.json_decode(data)
-                callback(response_object)
+                if response_object.kind =="lint" then
+                    callback(response_object)
+                elseif response_object.kind =="error" then
+                    vim.notify("Fastspell: got error from server: " .. response_object.message)
+                end
             end
         end)
     end)

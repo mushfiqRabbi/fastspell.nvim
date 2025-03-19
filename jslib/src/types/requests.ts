@@ -10,6 +10,11 @@ type SuggestionRequest = {
     text: string
 }
 
-type SpellRequest = CheckSpellRequest | SuggestionRequest;
+type ConfigureSpellCheckerRequest = {
+    Kind: "configure_spell_check_request",
+    configFilePath: string
+}
 
-export type {CheckSpellRequest, SpellRequest, SuggestionRequest}
+type SpellRequest = CheckSpellRequest | SuggestionRequest | ConfigureSpellCheckerRequest;
+
+export type {CheckSpellRequest, SpellRequest, SuggestionRequest, ConfigureSpellCheckerRequest}

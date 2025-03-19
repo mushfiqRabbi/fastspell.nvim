@@ -4,4 +4,10 @@
 ---@field languageId string?
 ---@field startLine number
 
----@alias SpellRequest CheckSpellRequest
+
+---@class ConfigureSpellCheckerRequest
+---@field Kind "configure_spell_check_request"
+---@field configFilePath string
+
+
+---@alias SpellRequest CheckSpellRequest | ConfigureSpellCheckerRequest

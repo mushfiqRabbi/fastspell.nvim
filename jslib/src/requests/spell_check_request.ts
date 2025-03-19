@@ -1,8 +1,15 @@
 import { spellCheckDocument } from "cspell-lib";
 import type { ValidationIssue } from "cspell-lib";
-import type { SpellCheckResponse } from "../types/responses";
-import type { CheckSpellRequest } from "../types/requests";
+import type { ConfigureSpellCheckResponse, SpellCheckResponse } from "../types/responses";
+import type { CheckSpellRequest, ConfigureSpellCheckerRequest } from "../types/requests";
 import type { SpellResponse } from "../types/responses";
+
+var CONFIG_FILE: string | undefined  = undefined;
+
+export function configureSpellCheckRequest(input: ConfigureSpellCheckerRequest): Promise<ConfigureSpellCheckResponse>{
+    CONFIG_FILE = input.configFilePath;
+    return Promise.resolve({kind: "configure_spell_check_response"})
+}
 
 function textToLineNumber(text: string, offset: number): Array<number>{
     const size = text.length;
@@ -31,8 +38,7 @@ function convertSpellCheckResult(input: Array<ValidationIssue>, lineOffset: numb
     }
 }
 
-
-async function processCheckSpellRequest(request: CheckSpellRequest): Promise<SpellResponse> {
+export async function processCheckSpellRequest(request: CheckSpellRequest): Promise<SpellResponse> {
 	const result = await spellCheckDocument(
 		{
 			uri: "",
@@ -40,10 +46,12 @@ async function processCheckSpellRequest(request: CheckSpellRequest): Promise<Spe
 			languageId: request.languageId,
 			locale: "en",
 		},
-		{ noConfigSearch: true },
+		{ 
+            configFile: CONFIG_FILE,
+            noConfigSearch: CONFIG_FILE == undefined
+        },
 		{},
 	);
 	return convertSpellCheckResult(result.issues, request.startLine, request.text);
 }
 
-export default processCheckSpellRequest;
