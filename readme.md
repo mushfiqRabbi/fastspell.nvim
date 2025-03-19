@@ -101,6 +101,32 @@ When you call setup, you can pass a table with a set of options to configure csp
 that spelling error are reported only for file buffer (filtering out for example terminal, UI elements such as [new-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) etcetera).
 Default to `true`
 - `diagnostic_severity`: The severity of the spelling diagnostic (see `:help vim.diagnostic.severity`). Default to vim.diagnostic.severity.INFO
+- `cspell_json_file_path`: Path where to find the `cspell.json` file. That can be used to configure the spell checking behavior
+
+## configure spell checking behavior
+
+using the property `cspell_json_file_path` you can point to a `cspell.json` file where you can put some spelling configuration that are specific for your needs.
+for example:
+
+### configuration of a cspell.json file
+```lua
+    -- you can configure cspell like this
+    fastspell.setup({
+        cspell_json_file_path = vim.fn.stdpath("config") .. "/cspell.json"
+    })
+```
+
+### example of a cspell.json file
+Find more documentation [here](https://github.com/streetsidesoftware/cspell/blob/main/docs/configuration/index.md)
+```json
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "fastspell", "nvim"
+    ]
+}
+```
 
 ## Trigger events, and effect area
 
