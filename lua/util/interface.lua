@@ -1,3 +1,5 @@
+local windows = vim.fn.has("win32") == 1;
+
 ---@class Interface
 local M = {}
 
@@ -9,14 +11,20 @@ function M.setup(callback, settings)
     local stdout = vim.loop.new_pipe(false)
     local stderr = vim.loop.new_pipe(false)
 
+
     local handle
-    handle, _ = vim.loop.spawn(settings.server_code_path, {
-        stdio = {stdin, stdout, stderr},
-    }, function(code, _)
-        vim.schedule(function ()
-            vim.notify('Fastspell: Process exited with code: ' .. code)
-        end)
-    end)
+    handle, _ = vim.loop.spawn(
+        windows and settings.server_code_path or "/bin/sh",
+        {
+            args = windows and nil or {settings.server_code_path},
+            stdio = {stdin, stdout, stderr},
+        },
+        function(code, _)
+            vim.schedule(function ()
+                vim.notify('Fastspell: Process exited with code: ' .. code)
+            end)
+        end
+    )
 
     if not handle then
         vim.notify("Fastspell: Failed to spawn process")

@@ -1,6 +1,7 @@
 local interface = require("util.interface")
 local spell_check_request = require("requests.spell_check_request")
 
+local windows = vim.fn.has("win32") == 1
 
 local M = {}
 
@@ -9,7 +10,7 @@ local default_settings = {
     namespace = "fastspell",
     server_code_path =
         debug.getinfo(1).source:sub(2):gsub("fastspell.lua", "") ..
-        (vim.fn.has("win32") and ".\\scripts\\start_server.cmd" or "./scripts/start_server.sh"),
+        (windows and ".\\scripts\\start_server.cmd" or "./scripts/start_server.sh"),
     filter_by_buf_type = true,
     diagnostic_severity = vim.diagnostic.severity.INFO,
     cspell_json_file_path = nil
